@@ -1,0 +1,200 @@
+<!DOCTYPE html><html><head>
+<!-- Yong Lee : leey2@onid.oregonstate.edu-->
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script>
+$(document).ready(function(){
+    $("#SeeV").click(function(){	
+		$.ajax({
+			  type: 'GET',
+			  url: 'http://final496-966.appspot.com/tsee/V',
+			  dataType: 'json',
+			  xhrFields: {
+				withCredentials: false
+			  },
+
+			  headers: {
+			  },
+
+			  success: function (data) {
+				if (data){
+					var a = 5;
+						for  (i=0; i < data.reports.length; i++){
+							if (a == 5){
+								a = data.reports[i] + '</br>';
+							}
+							else{
+								a = a + data.reports[i] + '</br>';
+							}	
+						}
+						$("#info1").html(a+ "\n");
+					}
+				else{
+					$("#info1").html("No Record.\n");
+				}
+				},
+				error: function (x, y, z) {
+					alert(x + '\n' + y + '\n' + z);
+				}
+		});
+	});
+
+
+    $("#SeeW").click(function(){	
+		$.ajax({
+			  type: 'GET',
+			  url: 'http://final496-966.appspot.com/tsee/W',
+			  dataType: 'json',
+			  xhrFields: {
+				withCredentials: false
+			  },
+
+			  headers: {
+			  },
+
+			  success: function (data) {
+				if (data){
+					var a = 5;
+						for  (i=0; i < data.reports.length; i++){
+							if (a == 5){
+								a = data.reports[i] + '</br>';
+							}
+							else{
+								a = a + data.reports[i] + '</br>';
+							}	
+						}
+						$("#info2").html(a+ "\n");
+					}
+				else{
+					$("#info2").html("No Record.\n");
+				}
+				},
+				error: function (x, y, z) {
+					alert(x + '\n' + y + '\n' + z);
+				}
+		});
+	});
+
+
+    $("#SeeP").click(function(){	
+		$.ajax({
+			  type: 'GET',
+			  url: 'http://final496-966.appspot.com/tsee/P',
+			  dataType: 'json',
+			  xhrFields: {
+				withCredentials: false
+			  },
+
+			  headers: {
+			  },
+
+			  success: function (data) {
+				if (data){
+					var a = 5;
+						for  (i=0; i < data.reports.length; i++){
+							if (a == 5){
+								a = data.reports[i] + '</br>';
+							}
+							else{
+								a = a + data.reports[i] + '</br>';
+							}	
+						}
+						$("#info3").html(a+ "\n");
+					}
+				else{
+					$("#info3").html("No Record.\n");
+				}
+				},
+				error: function (x, y, z) {
+					alert(x + '\n' + y + '\n' + z);
+				}
+		});
+	});
+	
+
+
+    $("#See2").click(function(){
+		see2=$("#see2").val();
+		$.ajax({
+			  type: 'GET',
+			  url: 'http://final496-966.appspot.com/tsearch/' + see2,
+			  dataType: 'json',
+			  xhrFields: {
+				withCredentials: false
+			  },
+			  
+			  headers: {
+
+			  },
+
+			  success: function (data) {
+				if(data.keys == 'No'){
+			  		$("#info4").html("Not Found or Record has been erased by the user.");
+				}
+				else{
+					$("#info4").html("Title : " + data.title+ '</br>' + "Time : " + data.when+ '</br>' + "Location : " + data.where+ '</br>' + "Description and Contact Info : " + data.description + '</br>' + "You were a : " + data.type+ '</br>'+ "Username : " + data.user+ '</br>');
+				}
+				},
+				error: function (x, y, z) {
+					alert(x + '\n' + y + '\n' + z);
+				}
+		});
+	});
+	
+	
+});	
+</script>
+</head>
+
+<body>
+
+<div data-role="page">
+  <div data-role="header">
+    <h1>Report Crime</h1>
+  </div>
+
+
+<div data-role="collapsible" data-theme="a" data-content-theme="c">                              
+       <h3>Victims: See Report List by Report ID</h3>                               
+		<input type="button" id="SeeV" value="See Report" /> 	
+		<div id="info1" data-theme="b" data-content-theme="c" class="ui-content"></div>   
+</div>
+
+
+<div data-role="collapsible" data-theme="a" data-content-theme="c">                              
+       <h3>Witnesses: See Report List by Report ID</h3>                               
+		<input type="button" id="SeeW" value="See Report" /> 	
+		<div id="info2" data-theme="b" data-content-theme="c" class="ui-content"></div>   
+</div>
+
+
+<div data-role="collapsible" data-theme="a" data-content-theme="c">                              
+       <h3>Perpetrators: See Report List by Report ID</h3>                               
+		<input type="button" id="SeeP" value="See Report" /> 	
+		<div id="info3" data-theme="b" data-content-theme="c" class="ui-content"></div>   
+</div>
+
+
+ <div data-role="collapsible" data-theme="a" data-content-theme="c">                              
+       <h3>See Detailed Report</h3>
+		ID of Report to See : <input type="text" id="see2" name="see2" maxlength="100" />  	   
+		<input type="button" id="See2" value="See Report" /> 	
+		<div id="info4" data-theme="b" data-content-theme="c" class="ui-content"></div>   
+</div>
+
+
+  
+</div>
+
+ <a href="index.html">Back to Log In page.</a> 
+ 
+</body>
+</html>
+
+	

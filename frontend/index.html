@@ -1,0 +1,121 @@
+<!DOCTYPE html><html><head>
+<!-- Yong Lee : leey2@onid.oregonstate.edu-->
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script>
+$(document).ready(function(){		
+    $("#login").click(function(){
+		name=$("#username").val();
+		pass=$("#password").val();
+		
+		$.ajax({
+			  type: 'POST',
+			  url: 'http://final496-966.appspot.com/login',
+			  data: { username: name, password: pass},
+			  dataType: 'json',
+			  xhrFields: {
+				withCredentials: false
+			  },
+
+			  headers: {
+			  },
+
+			  success: function (data) {
+				  if (data.keys == "nnnNo") {
+						$("#info").html("Try Again");
+				  }
+				  else{
+						localStorage.setItem("username", name);
+						location.href = 'Report.html';
+					}
+				},
+				error: function (x, y, z) {
+					alert(x + '\n' + y + '\n' + z);
+				}
+		});
+	});
+	
+
+    $("#create").click(function(){
+		name1=$("#username1").val();
+		pass1=$("#password1").val();
+
+		$.ajax({
+			  type: 'POST',
+			  url: 'http://final496-966.appspot.com/create',
+			  data: { username: name1, password: pass1},
+			  dataType: 'json',
+			  xhrFields: {
+				withCredentials: false
+			  },
+
+			  headers: {
+			  },
+
+			  success: function (data) {
+				  if (data.keys == "aaaNo") {
+						$("#info1").html("Account Already Exist");
+				  }
+				  else if (data.keys == "uuuNo" || data.keys == "pppNo") {
+						$("#info1").html("Must Enter Username");
+				  }
+				  else{
+						$("#info1").html("Account Created. Now Log in.");
+					}
+				},
+				error: function (x, y, z) {
+					alert(x + '\n' + y + '\n' + z);
+				}
+		});
+	});
+
+
+
+	
+});	
+</script>
+</head>
+
+<body>
+
+<div data-role="page">
+  <div data-role="header">
+    <h1>Report Crime</h1>
+  </div>
+  
+  
+<div data-role="collapsible" data-theme="a" data-content-theme="c">                              
+       <h3>Log in to your account</h3>                              
+       <br />                              
+		Username : <input type="text" id="username" name="username" maxlength="100" />      
+		Password : <input type="text" id="password" name="password" maxlength="100" />   	   
+        <input type="button" id="login" value="Log In" /> 
+		<div id="info" data-theme="b" data-content-theme="c" class="ui-content"></div>   
+</div>
+
+ <div data-role="collapsible" data-theme="a" data-content-theme="c">                              
+       <h3>Create Account</h3>                              
+       <br />                              
+		Username : <input type="text" id="username1" name="username1" maxlength="100" />      
+		Password : <input type="text" id="password1" name="password1" maxlength="100" />   	   
+        <input type="button" id="create" value="Create" /> 
+		<div id="info1" data-theme="b" data-content-theme="c" class="ui-content"></div>   
+</div>
+
+
+
+
+
+   
+</div>
+
+</body>
+</html>
+
+	

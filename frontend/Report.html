@@ -1,0 +1,381 @@
+<!DOCTYPE html><html><head>
+<!-- Yong Lee : leey2@onid.oregonstate.edu-->
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3&sensor=false&language=en"></script>
+<script>
+$(document).ready(function(){
+	uname = localStorage.getItem("username");
+
+    $("#create").click(function(){
+		title1=$("#title1").val();
+		time1=$("#time1").val();
+		location1=$("#location1").val();
+		desc1=$("#desc1").val();
+		var type1;
+		if (document.getElementById('t1').checked) {
+		  type1 = document.getElementById('t1').value;
+		  }
+		if (document.getElementById('t2').checked) {
+		  type1 = document.getElementById('t2').value;
+		}
+		if (document.getElementById('t3').checked) {
+		  type1 = document.getElementById('t3').value;
+		}
+
+		$.ajax({
+			  type: 'POST',
+			  url: 'http://final496-966.appspot.com/rcreate',
+			data: "title=" + title1 + "&when="+ time1 + "&where=" + location1 + "&description=" + desc1 + "&type=" + type1 + "&username=" +uname,
+			  //data: {title: title1, when: time1, where: location1, description: desc1, type: type1, username: uname},
+			  dataType: 'json',
+			  xhrFields: {
+				withCredentials: false
+			  },
+
+			  headers: {
+			  },
+
+			  success: function (data) {
+				  if (data.keys == "required") {
+						$("#info1").html("All fields are required."+data.keys);
+				  }
+				  else if (data.keys == "Unauthorized") {
+						$("#info1").html("You are not authorized."+data.keys);
+						$("#info1").html("aaa"+uname+"aaa");
+				  }
+				  else{
+						$("#info1").html("Report created.");
+					}
+				},
+				error: function (x, y, z) {
+					alert(x + '\n' + y + '\n' + z);
+				}
+		});
+	});
+
+    $("#See").click(function(){
+
+		$.ajax({
+			  type: 'GET',
+			  url: 'http://final496-966.appspot.com/rsee/' + uname,
+			  dataType: 'json',
+			  xhrFields: {
+				withCredentials: false
+			  },
+
+			  headers: {
+			  },
+
+			  success: function (data) {
+				if (data.keys == "Unauthorized") {
+						$("#info2").html("You are not authorized."+data.keys);
+				  }
+				else{
+					var a = 5;
+						for  (i=0; i < data.reports.length; i++){
+							if (a == 5){
+								a = data.reports[i] + '    '+ data.title[i] + '</br>' ;
+							}
+							else{
+								a = a + data.reports[i] + '    '+ data.title[i] + '</br>' ;
+							}	
+						}
+						$("#info2").html(a+ "\n");
+					}
+				},
+				error: function (x, y, z) {
+					alert(x + '\n' + y + '\n' + z);
+				}
+		});
+	});
+
+
+    $("#See2").click(function(){
+		see2=$("#see2").val();
+		$.ajax({
+			  type: 'GET',
+			  url: 'http://final496-966.appspot.com/rsee2/' + see2,
+			  dataType: 'json',
+			  xhrFields: {
+				withCredentials: false
+			  },
+			  
+			  headers: {
+
+			  },
+
+			  success: function (data) {
+				if(data.keys == 'No'){
+			  		$("#info4").html("Not Found.");
+				}
+				else{
+					$("#info4").html("Title : " + data.title+ '</br>' + "Time : " + data.when+ '</br>' + "Location : " + data.where+ '</br>' + "Description and Contact Info. : " + data.description + '</br>' + "You were a : " + data.type+ '</br>');
+				}
+				},
+				error: function (x, y, z) {
+					alert(x + '\n' + y + '\n' + z);
+				}
+		});
+	});
+	
+
+    $("#Update").click(function(){
+		title2=$("#title2").val();
+		time2=$("#time2").val();
+		location2=$("#location2").val();
+		desc2=$("#desc2").val();
+		update2=$("#update2").val();
+
+		$.ajax({
+			  type: 'put',
+			  url: 'http://final496-966.appspot.com/rupdate',
+			data: "title=" + title2 + "&when="+ time2 + "&where=" + location2 + "&description=" + desc2 + "&username=" +uname+ "&id=" +update2,
+			  //data: {title: title1, when: time1, where: location1, description: desc1, type: type1, username: uname},
+			  dataType: 'json',
+			  xhrFields: {
+				withCredentials: false
+			  },
+
+			  headers: {
+			  },
+
+			  success: function (data) {
+				$("#info5").html(data.keys);
+				},
+				error: function (x, y, z) {
+					alert(x + '\n' + y + '\n' + z);
+				}
+		});
+	});
+
+
+	
+    $("#Delete").click(function(){
+		del=$("#delete").val();
+		$.ajax({
+			  type: 'delete',
+			  url: 'http://final496-966.appspot.com/rdelete/' + del,
+			  dataType: 'json',
+			  xhrFields: {
+				withCredentials: false
+			  },
+			  
+			  headers: {
+			  },
+
+			  success: function (data) {
+				var div = document.getElementById('info3');
+				div.innerHTML = div.innerHTML + data.keys+ '</br>';
+				/*
+				if (data.keys == "Unauthorized") {
+						$("#info2").html("You are not authorized."+data.keys);
+				  }
+				else{
+					var div = document.getElementById('info2');
+						for  (i=0; i < data.reports.length; i++){
+							//$("#info2").html(data.reports[i] + "\n");
+							div.innerHTML = div.innerHTML + data.reports[i] + '</br>';
+						}	
+					}*/
+				},
+				error: function (x, y, z) {
+					alert(x + '\n' + y + '\n' + z);
+				}
+		});
+	});
+	
+});	
+</script>
+</head>
+
+<body>
+
+<div data-role="page">
+  <div data-role="header">
+    <h1>Report Crimes</h1>
+  </div>
+
+ <div data-role="collapsible" data-theme="a" data-content-theme="c">                              
+       <h3>Create Report (All fields must be filled)</h3>                              
+       <br />
+	   
+		Were you a :<br />  
+		<label>Witness? <input type="radio" name = "all" id="t1" value="Witness"><br />  </label>
+		<label>Victim?<input type="radio" name = "all" id="t2" value="Victim" checked="checked"><br />  </label>
+		<label>Perpetrator?<input type="radio" name= "all" id="t3" value="Perpetrator"><br />  </label>
+		
+		Title : <input type="text" id="title1" name="title1" maxlength="100" />      
+		Time : <input type="text" id="time1" name="time1" maxlength="100" />   
+		Location : <input type="text" id="location1" name="location1" maxlength="100" />  
+		Brief Description and Contact Information : <input type="text" id="desc1" name="desc1" maxlength="100" />
+		
+		<input type="button" id="create" value="Report" /> 
+		
+
+		<div id="info1" data-theme="b" data-content-theme="c" class="ui-content"></div>   
+</div>  
+
+
+ <div data-role="collapsible" data-theme="a" data-content-theme="c">                              
+       <h3>See Report List by Report ID and Title</h3>                               
+		<input type="button" id="See" value="See Report" /> 	
+		<div id="info2" data-theme="b" data-content-theme="c" class="ui-content"></div>   
+</div>
+
+
+ <div data-role="collapsible" data-theme="a" data-content-theme="c">                              
+       <h3>See Detailed Report</h3>
+		ID of Report to See : <input type="text" id="see2" name="see2" maxlength="100" />  	   
+		<input type="button" id="See2" value="See Report" /> 	
+		<div id="info4" data-theme="b" data-content-theme="c" class="ui-content"></div>   
+</div>
+
+
+ <div data-role="collapsible" data-theme="a" data-content-theme="c">                              
+       <h3>Change Report</h3>
+		ID of Report to Change (You are not allowed to change if you were a victim, witness, perpetrator) : <input type="text" id="update2" name="update2" maxlength="100" />
+
+		Title : <input type="text" id="title2" name="title2" maxlength="100" />      
+		Time : <input type="text" id="time2" name="time2" maxlength="100" />   
+		Location : <input type="text" id="location2" name="location2" maxlength="100" />  
+		Brief Description : <input type="text" id="desc2" name="desc2" maxlength="100" />		
+		<input type="button" id="Update" value="Update Report" /> 	
+		<div id="info5" data-theme="b" data-content-theme="c" class="ui-content"></div>   
+</div>
+
+
+ <div data-role="collapsible" data-theme="a" data-content-theme="c">                              
+       <h3>Delete Report</h3>
+		ID of Report to Delete : <input type="text" id="delete" name="delete" maxlength="100" />  	   
+		<input type="button" id="Delete" value="Delete Report" /> 	
+		<div id="info3" data-theme="b" data-content-theme="c" class="ui-content"></div>   
+</div>
+
+		
+
+
+        <div id="basic-map" data-theme="a" data-content-theme="c">
+				<h3>Get Location and Direction</h3>
+            <div data-role="content">
+                <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
+                    <div id="map_canvas" style="height:350px;" style="width: 100px;"></div>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="target-dest">Destination:</label>
+                    <input type="text" name="target-dest" id="target-dest" value=""  />
+                </div>
+                <a href="#" id="directions-button" data-role="button" data-inline="true" data-mini="true">Get Directions</a>
+                <div id="results" style="display:none;">
+                    <div id="directions"></div>
+                </div>
+            </div>
+        </div>
+
+		
+
+
+  <div data-role="main" class="ui-content">
+    <a href="#" class="ui-btn" data-rel="back">Go Back</a>
+  </div>  
+</div>
+
+ <a href="index.html">Back to Log In page.</a> 
+ 
+ 
+
+<script>
+            var map,
+                currentPosition,
+                directionsDisplay, 
+                directionsService;
+
+            function initialize(lat, lon)
+            {
+                directionsDisplay = new google.maps.DirectionsRenderer(); 
+                directionsService = new google.maps.DirectionsService();
+
+                currentPosition = new google.maps.LatLng(lat, lon);
+
+                map = new google.maps.Map(document.getElementById('map_canvas'), {
+                   zoom: 15,
+                   center: currentPosition,
+                   mapTypeId: google.maps.MapTypeId.ROADMAP
+                 });
+
+                directionsDisplay.setMap(map);
+
+                 var currentPositionMarker = new google.maps.Marker({
+                    position: currentPosition,
+                    map: map,
+                    title: "Current position"
+                });
+
+                var infowindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(currentPositionMarker, 'click', function() {
+                    infowindow.setContent("Current position: latitude: " + lat +" longitude: " + lon);
+                    infowindow.open(map, currentPositionMarker);
+                });
+            }
+
+			
+            function locError(error) {
+                // initialize map with a static predefined latitude, longitude
+               initialize(59.3426606750, 18.0736160278);
+            }
+
+            function locSuccess(position) {
+                initialize(position.coords.latitude, position.coords.longitude);
+            }
+
+            function calculateRoute() {
+                var targetDestination = $("#target-dest").val();
+                if (currentPosition && currentPosition != '' && targetDestination && targetDestination != '') {
+                    var request = {
+                        origin:currentPosition, 
+                        destination:targetDestination,
+                        travelMode: google.maps.DirectionsTravelMode["DRIVING"]
+                    };
+
+                    directionsService.route(request, function(response, status) {
+                        if (status == google.maps.DirectionsStatus.OK) {
+                            directionsDisplay.setPanel(document.getElementById("directions"));
+                            directionsDisplay.setDirections(response); 
+
+                            /*
+                                var myRoute = response.routes[0].legs[0];
+                                for (var i = 0; i < myRoute.steps.length; i++) {
+                                    alert(myRoute.steps[i].instructions);
+                                }
+                            */
+                            $("#results").show();
+                        }
+                        else {
+                            $("#results").hide();
+                        }
+                    });
+                }
+                else {
+                    $("#results").hide();
+                }
+            }
+
+            $(document).live("pagebeforeshow", "#map_page", function() {
+                navigator.geolocation.getCurrentPosition(locSuccess, locError);
+            });
+
+            $(document).on('click', '#directions-button', function(e){
+                e.preventDefault();
+                calculateRoute();
+            });
+
+        </script>
+</body>
+</html>
+
+	
